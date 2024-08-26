@@ -4,7 +4,9 @@
 	let userAnswer = "";
 	let result = "";
 	let isLoading = false;
-  
+	let userName = "";  // ユーザー名の管理
+	let isUserNameSet = false;  // ユーザー名が設定されているかどうかを管理
+
 	const fetchPokemon = async () => {
 	  isLoading = true;
 	  const randomId = Math.floor(Math.random() * 898) + 1;
@@ -24,7 +26,15 @@
 	  result = "";
 	  isLoading = false;
 	};
-  
+
+	// ユーザー名を設定する関数
+	const handleSetUserName = () => {
+	  if (userName) {
+		isUserNameSet = true;
+		fetchPokemon();  // ユーザー名が設定された後にポケモンを取得
+	  }
+	};
+
 	const checkAnswer = () => {
 	  if (userAnswer === pokemonName) {
 		result = "正解!";
@@ -32,52 +42,60 @@
 		result = `不正解。正しい名前は「${pokemonName}」です。`;
 	  }
 	};
-  
-	const handleFetchPokemon = () => {
-	  fetchPokemon();
-	};
-	
+
 	const handleNextQuestion = () => {
 	  fetchPokemon();
 	};
-  
-	// 初期ポケモンの取得
-	fetchPokemon();
 </script>
 
-<div class="container">
-	{#if isLoading}
-		<div class="loading-container">
-			<div class="spinner"></div>
-			<p>Loading...</p>
-		</div>
-	{/if}
-	
-	{#if !isLoading}
-		{#if imageUrl}
-			<img src={imageUrl} alt="ポケモンの画像" class="pokemon-image" />
-		{/if}
 
-		{#if !result}
-			<input 
-				type="text" 
-				bind:value={userAnswer} 
-				placeholder="ポケモンの名前を入力" 
-				class="input-box" 
-			/>
-			<button on:click={checkAnswer} class="answer-button">
-				回答
-			</button>
-		{/if}
-	  
-		{#if result}
-			<p class="result">{result}</p>
-			<button on:click={handleNextQuestion} class="next-button">
-				次の問題
-			</button>
+<div class="container">
+	{#if !isUserNameSet}
+		<!-- ユーザー名を要求する画面 -->
+		<p>ユーザー名を入力してください:</p>
+		<input 
+			type="text" 
+			bind:value={userName} 
+			placeholder="ユーザー名"
+			class="input-box" 
+		/>
+		<button on:click={handleSetUserName} class="answer-button">
+			スタート
+		</button>
+	{:else}
+		<!-- クイズの画面 -->
+		{#if isLoading}
+			<div class="loading-container">
+				<div class="spinner"></div>
+				<p>Loading...</p>
+			</div>
+		{:else}
+			{#if imageUrl}
+				<img src={imageUrl} alt="ポケモンの画像" class="pokemon-image" />
+			{/if}
+
+			{#if !result}
+				<input 
+					type="text" 
+					bind:value={userAnswer} 
+					placeholder="ポケモンの名前を入力" 
+					class="input-box" 
+				/>
+				<button on:click={checkAnswer} class="answer-button">
+					回答
+				</button>
+			{/if}
+		  
+			{#if result}
+				<p class="result">{result}</p>
+				<button on:click={handleNextQuestion} class="next-button">
+					次の問題
+				</button>
+			{/if}
 		{/if}
 	{/if}
 </div>
+
 
 <style>
 	/* 画像を中央に配置 */
