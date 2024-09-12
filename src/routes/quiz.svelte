@@ -4,8 +4,11 @@
 	let userAnswer = "";
 	let result = "";
 	let isLoading = false;
-	let userName = "";  // ユーザー名の管理
-	let isUserNameSet = false;  // ユーザー名が設定されているかどうかを管理
+	let userName = "";
+	let isUserNameSet = false;
+	let correctCount = 0;  // 正解数を管理
+	let questionCount = 0;  // 問題数を管理
+	const maxQuestions = 10;  // 最大問題数
 
 	const fetchPokemon = async () => {
 	  isLoading = true;
@@ -36,11 +39,25 @@
 	};
 
 	const checkAnswer = () => {
-	  if (userAnswer === pokemonName) {
-		result = "正解!";
-	  } else {
-		result = `不正解。正しい名前は「${pokemonName}」です。`;
-	  }
+		if (userAnswer === pokemonName) {
+			result = "正解!";
+			correctCount += 1;  // 正解数を増加
+		} else {
+			result = `不正解。正しい名前は「${pokemonName}」です。`;
+		}
+		
+	const showResultPage = () => {
+    // 結果ページにスコアを渡して移動する処理
+    sessionStorage.setItem('score', correctCount);
+    window.location.href = '/result';  // 結果ページへの移動
+	};
+		
+	questionCount += 1;
+
+	if (questionCount >= maxQuestions) {
+		// 結果ページへ移動
+		showResultPage();
+	}
 	};
 
 	const handleNextQuestion = () => {

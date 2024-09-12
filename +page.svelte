@@ -4,7 +4,7 @@
   const { form, field, errors } = createForm({
     initialValues: { name: '' },
     validate: {
-      name: value => (value ? '' : '名前は必須です')
+      name: value => (value ? '' : '名前は必須です')  //TODOアラートが表示されないので要修正//
     }
   });
 
